@@ -76,7 +76,7 @@ Widget _amount(
             children: [
               Text(
                 hasTransactionInfo
-                    ? '$amountPrefix$amountFormatted ${primaryCurrency.primaryCurrency == AvailablePrimaryCurrencyEnum.native ? (mvtInfo.tokenInformation!.symbol != null && mvtInfo.tokenInformation!.symbol! == '' ? 'NFT' : mvtInfo.tokenInformation!.symbol!) : mvtInfo.tokenInformation!.symbol!}'
+                    ? '$amountPrefix$amountFormatted ${primaryCurrency.primaryCurrency == AvailablePrimaryCurrencyEnum.native ? (mvtInfo.tokenInformation!.symbol != null && mvtInfo.tokenInformation!.symbol! == '' ? 'NFT' : mvtInfo.tokenInformation!.symbol ?? '') : mvtInfo.tokenInformation!.symbol ?? ''}'
                     : '$amountPrefix$amountFormatted ${AccountBalance.cryptoCurrencyLabel}',
                 style: ArchethicThemeStyles.textStyleSize12W100Primary,
               ),

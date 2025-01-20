@@ -35,7 +35,6 @@ import 'package:archethic_lib_dart/archethic_lib_dart.dart' as archethic;
 /// - [ApiService]: For interacting with the Archethic blockchain API.
 /// - [TokensRepository]: For fetching token metadata and details.
 
-// TODO(reddwarf03): Skip transactions with protocol version < 7
 class RecentTransactionsRepositoryImpl
     with TokenParser
     implements RecentTransactionsRepository {

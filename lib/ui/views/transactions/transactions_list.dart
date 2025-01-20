@@ -42,22 +42,38 @@ class _TransactionsListState extends ConsumerState<TransactionsList>
 
     return Column(
       children: [
-        recentTransactionsAsync.map(
+        recentTransactionsAsync.when(
+          skipLoadingOnRefresh: true,
+          skipLoadingOnReload: true,
           data: (data) {
-            if (data.value.isEmpty) {
+            if (data.isEmpty) {
               return _recentTransactionsEmpty(context);
             }
 
             return Column(
-              children: data.value.map((transaction) {
+              children: data.map((transaction) {
                 return TransactionDetail(
                   transaction: transaction,
                 );
               }).toList(),
             );
           },
-          error: (_) => const SizedBox.shrink(),
-          loading: (_) => const SizedBox.shrink(),
+          error: (_, __) => const SizedBox.shrink(),
+          loading: () => const Padding(
+            padding: EdgeInsets.only(top: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 30,
+                  height: 30,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );
