@@ -7,7 +7,7 @@ part of 'recent_transactions.dart';
 // **************************************************************************
 
 String _$recentTransactionsRepositoryHash() =>
-    r'ff6fe6c3e570f2c5c5398c749f9cb25d474921dd';
+    r'a58f767d22d1f80f11d53aa107bdc740085f717f';
 
 /// See also [recentTransactionsRepository].
 @ProviderFor(recentTransactionsRepository)

@@ -7,7 +7,7 @@ part of 'formated_name.dart';
 // **************************************************************************
 
 String _$formatedNameFromAddressHash() =>
-    r'd31d7d49e32302612dc334e5e9e06d79bc609e63';
+    r'e2ddbf4fe85b71bd797b1141ca3f99ff4a045743';
 
 /// Copied from Dart SDK
 class _SystemHash {
