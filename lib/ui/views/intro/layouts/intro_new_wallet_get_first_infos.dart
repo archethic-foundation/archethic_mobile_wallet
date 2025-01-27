@@ -138,11 +138,6 @@ class _IntroNewWalletDisclaimerState
                       await ref
                           .read(SettingsProviders.settings.notifier)
                           .setEnvironment(environment as aedappfm.Environment);
-                      await ref
-                          .read(SettingsProviders.settings.notifier)
-                          .setTestnetEnabled(
-                            environment != aedappfm.Environment.mainnet,
-                          );
                     }
 
                     FocusScope.of(context).requestFocus(nameFocusNode);

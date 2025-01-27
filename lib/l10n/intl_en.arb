@@ -203,7 +203,6 @@
     "passwordBlank": "Password cannot be empty",
     "welcomeDisclaimerChoice": "I have read and agree to the privacy policy",
     "showBalances": "Show balances",
-    "testnetEnabled": "Testnet enabled",
     "introNewWalletGetFirstInfosWelcome": "Welcome to Archethic Wallet.",
     "introNewWalletGetFirstInfosNameRequest": "Let's start by naming your first account, which will be stored on your decentralized keychain",
     "introNewWalletGetFirstInfosNameInfos": "It will allow you to distinguish this account from other accounts that you can, if you want, create later.\n\nWARNING : This name will be added to your decentralized keychain and cannot be modified.",
@@ -673,5 +672,14 @@
         }
     },
     "walletNotCreatedTargetEnv": "The wallet has not been created in the {targetEnv} environment.",
-    "walletChangeLoadingError": "The change of environment encountered an issue."
+    "walletChangeLoadingError": "The change of environment encountered an issue.",
+    "switchEnvHeader": "Switch environment",
+    "switchEnvHeaderInfo": "Switch to an environment other than your current {currentEnv} environment.",
+    "@switchEnvHeaderInfo": {
+        "placeholders": {
+            "currentEnv": {
+                "type": "String"
+            }
+        }
+    }
 }

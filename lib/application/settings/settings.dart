@@ -34,7 +34,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
           ),
           showBalances: true,
           showPriceChart: true,
-          testnetEnabled: false,
         ),
       );
 
@@ -45,10 +44,6 @@ class SettingsNotifier extends StateNotifier<Settings> {
 
   Future<void> setShowBalances(bool showBalances) => _update(
         state.copyWith(showBalances: showBalances),
-      );
-
-  Future<void> setTestnetEnabled(bool testnetEnabled) => _update(
-        state.copyWith(testnetEnabled: testnetEnabled),
       );
 
   Future<void> setShowPriceChart(bool showPriceChart) => _update(
