@@ -376,11 +376,6 @@ class _ButtonImportWallet extends ConsumerWidget {
                 await ref
                     .read(SettingsProviders.settings.notifier)
                     .setEnvironment(environment as aedappfm.Environment);
-                await ref
-                    .read(SettingsProviders.settings.notifier)
-                    .setTestnetEnabled(
-                      environment != aedappfm.Environment.mainnet,
-                    );
               }
               context.go(IntroImportSeedPage.routerPage);
             }

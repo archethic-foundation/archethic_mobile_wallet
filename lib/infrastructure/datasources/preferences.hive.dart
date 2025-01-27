@@ -36,7 +36,6 @@ class PreferencesHiveDatasource {
   static const String pinLockUntil = 'archethic_wallet_pin_lock_until';
   static const String pinPadShuffle = 'archethic_wallet_pinPadShuffle';
   static const String showBalances = 'archethic_wallet_showBalances';
-  static const String testnetEnabled = 'archethic_wallet_testnetEnabled';
   static const String showPriceChart = 'archethic_wallet_showPriceChart';
   static const String priceChartScale = 'archethic_wallet_priceChartScale';
   static const String activeRPCServer = 'archethic_wallet_activeRPCServer';
@@ -144,11 +143,6 @@ class PreferencesHiveDatasource {
   Future<void> setShowBalances(bool value) => _setValue(showBalances, value);
 
   bool getShowBalances() => _getValue(showBalances, defaultValue: true);
-
-  Future<void> setTestnetEnabled(bool value) =>
-      _setValue(testnetEnabled, value);
-
-  bool getTestnetEnabled() => _getValue(testnetEnabled, defaultValue: false);
 
   Future<void> setActiveRPCServer(bool value) =>
       _setValue(activeRPCServer, value);

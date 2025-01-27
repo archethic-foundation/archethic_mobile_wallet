@@ -200,7 +200,6 @@
     "passwordStrengthStrong": "Votre mot de passe est fort.",
     "welcomeDisclaimerChoice": "J'ai lu et j'accepte la politique de confidentialité",
     "showBalances": "Afficher les balances",
-    "testnetEnabled": "Testnet activé",
     "introNewWalletGetFirstInfosWelcome": "Bienvenue dans le Wallet Archethic.",
     "introNewWalletGetFirstInfosNameRequest": "Commençons par donner un nom à votre premier compte, qui sera stocké sur votre porte-clés décentralisé.",
     "introNewWalletGetFirstInfosNameInfos": "Il vous permettra de distinguer ce compte avec les autres comptes que vous pourrez, si vous le souhaitez, créer par la suite.\n\nATTENTION : Ce nom sera rattaché à votre porte-clés décentralisé et ne pourra plus être modifié.",
@@ -669,5 +668,14 @@
         }
     },
     "walletNotCreatedTargetEnv": "Le wallet n'a pas été créé dans l'environnement {targetEnv}.",
-    "walletChangeLoadingError": "Le changement d'environnement a rencontré un problème."
+    "walletChangeLoadingError": "Le changement d'environnement a rencontré un problème.",
+    "switchEnvHeader": "Changer d'environnement",
+    "switchEnvHeaderInfo": "Permet de basculer sur un autre environnement que votre environnement actuel \"{currentEnv}\"",
+    "@switchEnvHeaderInfo": {
+        "placeholders": {
+            "currentEnv": {
+                "type": "String"
+            }
+        }
+    }
 }

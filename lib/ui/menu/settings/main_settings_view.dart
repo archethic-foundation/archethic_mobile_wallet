@@ -35,6 +35,7 @@ class MainMenuView extends ConsumerWidget {
         },
       );
     }
+    final environment = ref.watch(environmentProvider);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -56,7 +57,22 @@ class MainMenuView extends ConsumerWidget {
                 children: <Widget>[
                   ListView(
                     children: <Widget>[
-                      const EnvironmentChange(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Align(
+                              child: Text(
+                                environment.label,
+                                style: AppTextStyles.bodyMediumSecondaryColor(
+                                  context,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                       const _SettingsListItem.spacer(),
                       _SettingsListItem.title(text: localizations.information),
                       const _SettingsListItem.spacer(),

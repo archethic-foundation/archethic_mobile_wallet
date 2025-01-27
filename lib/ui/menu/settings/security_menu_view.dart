@@ -48,6 +48,7 @@ class SecurityMenuView extends ConsumerWidget
         (settings) => settings.authenticationMethod,
       ),
     );
+    final settings = ref.watch(SettingsProviders.settings);
 
     return DecoratedBox(
       decoration: BoxDecoration(
@@ -79,6 +80,19 @@ class SecurityMenuView extends ConsumerWidget
                       const _AutoLockSettingsListItem(),
                       const _SettingsListItem.spacer(),
                       const _BackupSecretPhraseListItem(),
+                      const _SettingsListItem.spacer(),
+                      _SettingsListItem.singleLineWithInfos(
+                        heading: localizations.switchEnvHeader,
+                        info: localizations.switchEnvHeaderInfo(
+                          settings.environment.displayName,
+                        ),
+                        headingStyle:
+                            ArchethicThemeStyles.textStyleSize16W600Primary,
+                        icon: Symbols.deployed_code_account,
+                        onPressed: () async {
+                          await _switchEnv(context, ref);
+                        },
+                      ),
                       const _SettingsListItem.spacer(),
                       if (ArchethicWebsocketRPCServer.isPlatformCompatible)
                         const _ActiveServerRPCSettingsListItem(),
@@ -114,6 +128,167 @@ class SecurityMenuView extends ConsumerWidget
         ),
       ),
     );
+  }
+
+  Future<void> _switchEnv(BuildContext context, WidgetRef ref) async {
+    final settings = ref.watch(SettingsProviders.settings);
+    final localizations = AppLocalizations.of(context)!;
+
+    final _saveEnvironment = settings.environment;
+    final _selectedEnvironment = await context
+        .push(EnvironmentDialog.routerPage) as aedappfm.Environment?;
+    if (_selectedEnvironment == null) return;
+    if (_selectedEnvironment != _saveEnvironment) {
+      final seed = ref.read(sessionNotifierProvider).loggedIn?.wallet.seed;
+
+      var keychainNetworkExists = false;
+
+      try {
+        await archethic.ApiService(
+          _selectedEnvironment.endpoint,
+        ).getKeychain(seed!);
+        keychainNetworkExists = true;
+        // ignore: empty_catches
+      } catch (e) {}
+
+      if (keychainNetworkExists == false) {
+        final session = ref.read(sessionNotifierProvider);
+
+        final accounts = await AccountsDialog.selectMultipleAccounts(
+          context: context,
+          accounts: session.loggedIn!.wallet.appKeychain.accounts,
+          confirmBtnLabel: localizations.networkChangeCreateKeychainBtn,
+          dialogTitle: localizations.networkChangeHeader,
+          isModal: true,
+          header: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Column(
+              children: [
+                Text(
+                  localizations.networkChangeKeychainNotExists(
+                    _selectedEnvironment.displayName,
+                  ),
+                  style: AppTextStyles.bodySmall(context),
+                ),
+              ],
+            ),
+          ),
+        );
+
+        final nameList = <String>[];
+        if (accounts == null || accounts.isEmpty) {
+          return;
+        }
+        for (final account in accounts) {
+          nameList.add(Uri.decodeFull(account.name));
+        }
+
+        try {
+          context.loadingOverlay.show(
+            title: AppLocalizations.of(context)!.pleaseWaitChangeNetwork,
+          );
+          final originKeychain = await archethic.ApiService(
+            _saveEnvironment.endpoint,
+          ).getKeychain(seed!);
+          await ref.read(createNewAppWalletCaseProvider).run(
+                seed,
+                archethic.ApiService(_selectedEnvironment.endpoint),
+                nameList,
+                keychainSeed: originKeychain.seed == null
+                    ? null
+                    : archethic.uint8ListToHex(originKeychain.seed!),
+              );
+
+          UIUtil.showSnackbar(
+            localizations.walletCreatedTargetEnv(
+              _selectedEnvironment.displayName,
+            ),
+            context,
+            ref,
+            ArchethicTheme.text,
+            ArchethicTheme.snackBarShadow,
+            duration: const Duration(milliseconds: 5000),
+            icon: Symbols.info,
+          );
+        } catch (e) {
+          UIUtil.showSnackbar(
+            '${localizations.walletNotCreatedTargetEnv(_selectedEnvironment.displayName)} (${_getErrorMessage(e)})',
+            context,
+            ref,
+            ArchethicTheme.text,
+            ArchethicTheme.snackBarShadow,
+            duration: const Duration(milliseconds: 5000),
+          );
+
+          context.loadingOverlay.hide();
+          context.pop();
+          return;
+        }
+      } else {
+        context.loadingOverlay.show(
+          title: AppLocalizations.of(context)!.pleaseWaitChangeNetwork,
+        );
+      }
+
+      try {
+        final languageSeed = ref.read(
+          SettingsProviders.settings.select(
+            (settings) => settings.languageSeed,
+          ),
+        );
+        await ref
+            .read(SettingsProviders.settings.notifier)
+            .setEnvironment(_selectedEnvironment);
+
+        await ref.read(sessionNotifierProvider.notifier).restoreFromSeed(
+              seed: seed!,
+              languageCode: languageSeed,
+            );
+
+        final accounts = await ref.read(accountsNotifierProvider.future);
+
+        await ref
+            .read(accountsNotifierProvider.notifier)
+            .selectAccount(accounts.first);
+
+        unawaited(
+          (await ref
+                  .read(accountsNotifierProvider.notifier)
+                  .selectedAccountNotifier)
+              ?.refreshAll(),
+        );
+        context.loadingOverlay.hide();
+      } catch (e) {
+        UIUtil.showSnackbar(
+          '${localizations.walletChangeLoadingError} (${_getErrorMessage(e)})',
+          context,
+          ref,
+          ArchethicTheme.text,
+          ArchethicTheme.snackBarShadow,
+          duration: const Duration(milliseconds: 5000),
+        );
+
+        await ref
+            .read(SettingsProviders.settings.notifier)
+            .setEnvironment(_saveEnvironment);
+
+        context.loadingOverlay.hide();
+        context.pop();
+      }
+    }
+  }
+
+  String _getErrorMessage(Object e) {
+    if (e is archethic.ArchethicConnectionException) {
+      return e.cause;
+    } else if (e is archethic.ArchethicInvalidResponseException) {
+      return e.cause;
+    } else if (e is ArchethicNewKeychainErrorException) {
+      return e.cause;
+    } else if (e is ArchethicNewKeychainAccessErrorException) {
+      return e.cause;
+    }
+    return e.toString();
   }
 }
 
