@@ -102,17 +102,12 @@ class _TransferConfirmSheetState extends ConsumerState<TransferConfirmSheet>
 
     try {
       final transfer = ref.read(TransferFormProvider.transferForm);
-      final accountSelected = ref.read(
-        accountsNotifierProvider.select(
-          (accounts) => accounts.valueOrNull?.selectedAccount,
-        ),
-      );
       if (transfer.transferType == TransferType.nft) {
         unawaited(
           (await ref
                   .read(accountsNotifierProvider.notifier)
                   .selectedAccountNotifier)
-              ?.updateNFT(accountSelected!),
+              ?.refreshNFT(),
         );
       }
       unawaited(

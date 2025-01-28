@@ -168,7 +168,7 @@ class TokenDetailSheet extends ConsumerWidget
                           (await ref
                                   .read(accountsNotifierProvider.notifier)
                                   .selectedAccountNotifier)
-                              ?.updateBalance(accountSelected),
+                              ?.refreshBalance(),
                         );
                         unawaited(
                           (await ref
