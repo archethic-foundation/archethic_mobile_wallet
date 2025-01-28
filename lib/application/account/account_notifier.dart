@@ -22,6 +22,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'account_notifier.g.dart';
 
+typedef _RefreshOperation = ({
+  String name, // for logging purpose
+  Future<Account> Function(
+    Account account,
+  ) operation, // perform the update operation
+});
+
 @riverpod
 class AccountNotifier extends _$AccountNotifier {
   final _logger = Logger('AccountNotifier');
@@ -32,109 +39,104 @@ class AccountNotifier extends _$AccountNotifier {
   }
 
   /// Updates the account in Hive and handles errors consistently
-  Future<void> _updateAccount() async {
-    if (state.value == null) return;
-
+  Future<void> _saveLocally(Account account) async {
     try {
-      await AccountHiveDatasource.instance().updateAccount(state.value!);
-      _logger.fine('Account updated successfully');
+      await AccountHiveDatasource.instance().updateAccount(account);
+      _logger.fine('Account locally saved successfully');
     } catch (error, stack) {
-      _logger.severe('Failed to update account', error, stack);
+      _logger.severe('Failed to locally save account', error, stack);
     }
   }
 
   /// Executes a refresh operation with proper error handling and state management
+  Future<void> _performOperations(
+    Iterable<_RefreshOperation> operations,
+  ) =>
+      update(
+        (account) async {
+          if (account == null) {
+            _logger.warning('Account refresh : No account available');
+            return null;
+          }
+          ref
+              .read(refreshInProgressNotifierProvider.notifier)
+              .refreshInProgress = true;
+
+          var updatedAccount = account;
+          for (final operation in operations) {
+            final logName = 'Refresh ${operation.name}(${account.name})';
+            _logger.fine('Starting $logName');
+            try {
+              updatedAccount = await operation.operation(updatedAccount);
+
+              _logger.fine('$logName successful');
+            } catch (e, stack) {
+              _logger.severe('$logName failed', e, stack);
+            }
+          }
+
+          await _saveLocally(updatedAccount);
+          ref
+              .read(refreshInProgressNotifierProvider.notifier)
+              .refreshInProgress = false;
+          return updatedAccount;
+        },
+      );
+
   Future<void> _performOperation(
-    String operationName,
-    Future<void> Function(Account account) operation,
-  ) async {
-    final account = state.value;
-    if (account == null) {
-      _logger.warning('$operationName: No account available');
-      return;
-    }
+    _RefreshOperation operation,
+  ) =>
+      _performOperations([operation]);
 
-    _logger.fine('Starting $operationName');
-    try {
-      ref.read(refreshInProgressNotifierProvider.notifier).refreshInProgress =
-          true;
-      await operation(account);
-      await _updateAccount();
-
-      _logger.fine('$operationName completed successfully');
-    } catch (e, stack) {
-      _logger.severe('$operationName failed', e, stack);
-    } finally {
-      ref.read(refreshInProgressNotifierProvider.notifier).refreshInProgress =
-          false;
-    }
-  }
-
-  Future<void> refreshRecentTransactions() async {
-    await _performOperation(
-      'Recent Transactions',
-      updateRecentTransactions,
-    );
-  }
+  Future<void> refreshRecentTransactions() =>
+      _performOperation(_updateRecentTransactionsOperation);
 
   Future<void> refreshFungibleTokens() =>
-      _performOperation('Refresh Fungible Tokens', updateFungibleTokens);
+      _performOperation(_updateFungibleTokensOperation);
 
-  Future<void> refreshNFT() => _performOperation('Refresh NFT', updateNFT);
+  Future<void> refreshNFT() => _performOperation(_updateNFTOperation);
 
-  Future<void> refreshBalance() =>
-      _performOperation('Refresh Balance', updateBalance);
+  Future<void> refreshBalance() => _performOperation(_updateBalanceOperation);
 
-  Future<void> refreshAll() async {
-    final operations = [
-      updateBalance,
-      updateFungibleTokens,
-      updateNFT,
-    ];
+  Future<void> refreshAll() => _performOperations([
+        _updateBalanceOperation,
+        _updateFungibleTokensOperation,
+        _updateNFTOperation,
+      ]);
 
-    for (final operation in operations) {
-      await _performOperation('Refresh All', operation);
-    }
-  }
+  _RefreshOperation get _updateBalanceOperation => (
+        name: 'Balance',
+        operation: (Account account) async {
+          final balanceGetResponseMap = await ref
+              .read(appServiceProvider)
+              .getBalanceGetResponse([account.genesisAddress]);
 
-  Future<void> updateBalance(Account account) async {
-    _logger.fine('Starting balance update');
+          if (balanceGetResponseMap[account.genesisAddress] == null) {
+            _logger.warning(
+              'No balance response for address: ${account.genesisAddress}',
+            );
+            return account;
+          }
 
-    final balanceGetResponseMap = await ref
-        .read(appServiceProvider)
-        .getBalanceGetResponse([account.genesisAddress]);
+          final ucidsTokens = await ref.read(
+            aedappfm.UcidsTokensProviders.ucidsTokens(
+              environment: ref.read(environmentProvider),
+            ).future,
+          );
 
-    if (balanceGetResponseMap[account.genesisAddress] == null) {
-      _logger.warning(
-        'No balance response for address: ${account.genesisAddress}',
+          final cryptoPrice = ref.read(aedappfm.CoinPriceProviders.coinPrices);
+          final balanceGetResponse =
+              balanceGetResponseMap[account.genesisAddress]!;
+
+          final accountBalance = await _calculateAccountBalance(
+            balanceGetResponse,
+            ucidsTokens,
+            cryptoPrice,
+          );
+
+          return account.copyWith(balance: accountBalance);
+        }
       );
-      return;
-    }
-
-    try {
-      final ucidsTokens = await ref.read(
-        aedappfm.UcidsTokensProviders.ucidsTokens(
-          environment: ref.read(environmentProvider),
-        ).future,
-      );
-
-      final cryptoPrice = ref.read(aedappfm.CoinPriceProviders.coinPrices);
-      final balanceGetResponse = balanceGetResponseMap[account.genesisAddress]!;
-
-      final accountBalance = await _calculateAccountBalance(
-        balanceGetResponse,
-        ucidsTokens,
-        cryptoPrice,
-      );
-
-      state = AsyncData(account.copyWith(balance: accountBalance));
-
-      _logger.fine('Balance update completed successfully');
-      return;
-    } catch (e, stack) {
-      _logger.severe('Failed to update balance', e, stack);
-    }
-  }
 
   Future<AccountBalance> _calculateAccountBalance(
     Balance balanceGetResponse,
@@ -206,65 +208,52 @@ class AccountNotifier extends _$AccountNotifier {
     return totalUSD;
   }
 
-  Future<void> updateFungibleTokens(Account account) async {
-    _logger.fine('Starting fungible tokens update');
-    try {
-      final appService = ref.read(appServiceProvider);
-      final poolsListRaw =
-          await ref.read(DexPoolProviders.getPoolListRaw.future);
+  _RefreshOperation get _updateFungibleTokensOperation => (
+        name: 'Fungible Tokens',
+        operation: (Account account) async {
+          final appService = ref.read(appServiceProvider);
+          final poolsListRaw =
+              await ref.read(DexPoolProviders.getPoolListRaw.future);
 
-      final fungiblesTokensList = await appService.getFungiblesTokensList(
-        account.genesisAddress,
-        poolsListRaw,
+          final fungiblesTokensList = await appService.getFungiblesTokensList(
+            account.genesisAddress,
+            poolsListRaw,
+          );
+
+          return account.copyWith(accountTokens: fungiblesTokensList);
+        }
       );
 
-      state = AsyncData(account.copyWith(accountTokens: fungiblesTokensList));
-      _logger.fine('Fungible tokens update completed successfully');
-      return;
-    } catch (e, stack) {
-      _logger.severe('Failed to update fungible tokens', e, stack);
-    }
-  }
-
-  Future<void> updateRecentTransactions(Account account) async {
-    _logger.fine('Starting recent transactions update');
-    try {
-      ref.invalidate(
-        recentTransactionsProvider(
-          account.genesisAddress,
-        ),
-      );
-      _logger.fine('Recent transactions update completed successfully');
-      return;
-    } catch (e, stack) {
-      _logger.severe('Failed to update recent transactions', e, stack);
-    }
-  }
-
-  Future<void> updateNFT(Account account) async {
-    _logger.fine('Starting NFT update');
-    try {
-      final session = ref.read(sessionNotifierProvider).loggedIn!;
-      final tokenInformation = await ref.read(
-        NFTProviders.getNFTList(
-          account.genesisAddress,
-          account.name,
-          session.wallet.keychainSecuredInfos,
-        ).future,
+  _RefreshOperation get _updateRecentTransactionsOperation => (
+        name: 'Recent Transactions',
+        operation: (Account account) async {
+          ref.invalidate(
+            recentTransactionsProvider(
+              account.genesisAddress,
+            ),
+          );
+          return account;
+        },
       );
 
-      state = AsyncData(
-        account.copyWith(
-          accountNFT: tokenInformation.$1,
-          accountNFTCollections: tokenInformation.$2,
-        ),
+  _RefreshOperation get _updateNFTOperation => (
+        name: 'NFT',
+        operation: (Account account) async {
+          final session = ref.read(sessionNotifierProvider).loggedIn!;
+          final tokenInformation = await ref.read(
+            NFTProviders.getNFTList(
+              account.genesisAddress,
+              account.name,
+              session.wallet.keychainSecuredInfos,
+            ).future,
+          );
+
+          return account.copyWith(
+            accountNFT: tokenInformation.$1,
+            accountNFTCollections: tokenInformation.$2,
+          );
+        }
       );
-      _logger.fine('NFT update completed successfully');
-      return;
-    } catch (e, stack) {
-      _logger.severe('Failed to update NFT', e, stack);
-    }
-  }
 
   Future<void> addCustomTokenAddress(
     Account account,
@@ -276,16 +265,14 @@ class AccountNotifier extends _$AccountNotifier {
         _logger.warning('Invalid token address: $tokenAddress');
         return;
       }
-
-      state = AsyncData(
-        account.copyWith(
-          customTokenAddressList: [
-            ...account.customTokenAddressList ?? [],
-            tokenAddress.toUpperCase(),
-          ],
-        ),
+      final updatedAccount = account.copyWith(
+        customTokenAddressList: [
+          ...account.customTokenAddressList ?? [],
+          tokenAddress.toUpperCase(),
+        ],
       );
-      await _updateAccount();
+      state = AsyncData(updatedAccount);
+      await _saveLocally(updatedAccount);
 
       _logger.fine('Custom token address added successfully');
     } catch (e, stack) {
@@ -310,16 +297,15 @@ class AccountNotifier extends _$AccountNotifier {
         return;
       }
 
-      state = AsyncData(
-        account.copyWith(
-          customTokenAddressList: customTokenAddressList
-              .where(
-                (element) => element != tokenAddress.toUpperCase(),
-              )
-              .toList(),
-        ),
+      final updatedAccount = account.copyWith(
+        customTokenAddressList: customTokenAddressList
+            .where(
+              (element) => element != tokenAddress.toUpperCase(),
+            )
+            .toList(),
       );
-      await _updateAccount();
+      state = AsyncData(updatedAccount);
+      await _saveLocally(updatedAccount);
 
       _logger.fine('Custom token address removed successfully');
     } catch (e, stack) {
