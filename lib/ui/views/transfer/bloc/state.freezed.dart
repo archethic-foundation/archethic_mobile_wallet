@@ -66,8 +66,10 @@ abstract class $TransferFormStateCopyWith<$Res> {
       String errorAmountText,
       String errorMessageText});
 
+  $AccountBalanceCopyWith<$Res> get accountBalance;
   $TransferRecipientCopyWith<$Res> get recipient;
   $AETokenCopyWith<$Res>? get aeToken;
+  $AccountTokenCopyWith<$Res>? get accountToken;
 }
 
 /// @nodoc
@@ -169,6 +171,16 @@ class _$TransferFormStateCopyWithImpl<$Res, $Val extends TransferFormState>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
+  $AccountBalanceCopyWith<$Res> get accountBalance {
+    return $AccountBalanceCopyWith<$Res>(_value.accountBalance, (value) {
+      return _then(_value.copyWith(accountBalance: value) as $Val);
+    });
+  }
+
+  /// Create a copy of TransferFormState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
   $TransferRecipientCopyWith<$Res> get recipient {
     return $TransferRecipientCopyWith<$Res>(_value.recipient, (value) {
       return _then(_value.copyWith(recipient: value) as $Val);
@@ -186,6 +198,20 @@ class _$TransferFormStateCopyWithImpl<$Res, $Val extends TransferFormState>
 
     return $AETokenCopyWith<$Res>(_value.aeToken!, (value) {
       return _then(_value.copyWith(aeToken: value) as $Val);
+    });
+  }
+
+  /// Create a copy of TransferFormState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AccountTokenCopyWith<$Res>? get accountToken {
+    if (_value.accountToken == null) {
+      return null;
+    }
+
+    return $AccountTokenCopyWith<$Res>(_value.accountToken!, (value) {
+      return _then(_value.copyWith(accountToken: value) as $Val);
     });
   }
 }
@@ -216,9 +242,13 @@ abstract class _$$TransferFormStateImplCopyWith<$Res>
       String errorMessageText});
 
   @override
+  $AccountBalanceCopyWith<$Res> get accountBalance;
+  @override
   $TransferRecipientCopyWith<$Res> get recipient;
   @override
   $AETokenCopyWith<$Res>? get aeToken;
+  @override
+  $AccountTokenCopyWith<$Res>? get accountToken;
 }
 
 /// @nodoc

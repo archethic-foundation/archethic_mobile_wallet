@@ -6,17 +6,17 @@ part of 'nft_infos_off_chain.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class NftInfosOffChainAdapter extends TypeAdapter<NftInfosOffChain> {
+class NftInfosOffChainImplAdapter extends TypeAdapter<_$NftInfosOffChainImpl> {
   @override
   final int typeId = 11;
 
   @override
-  NftInfosOffChain read(BinaryReader reader) {
+  _$NftInfosOffChainImpl read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return NftInfosOffChain(
+    return _$NftInfosOffChainImpl(
       id: fields[0] as String?,
       categoryNftIndex: fields[3] as int?,
       favorite: fields[4] as bool?,
@@ -24,7 +24,7 @@ class NftInfosOffChainAdapter extends TypeAdapter<NftInfosOffChain> {
   }
 
   @override
-  void write(BinaryWriter writer, NftInfosOffChain obj) {
+  void write(BinaryWriter writer, _$NftInfosOffChainImpl obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
@@ -41,7 +41,27 @@ class NftInfosOffChainAdapter extends TypeAdapter<NftInfosOffChain> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NftInfosOffChainAdapter &&
+      other is NftInfosOffChainImplAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$NftInfosOffChainImpl _$$NftInfosOffChainImplFromJson(
+        Map<String, dynamic> json) =>
+    _$NftInfosOffChainImpl(
+      id: json['id'] as String?,
+      categoryNftIndex: (json['categoryNftIndex'] as num?)?.toInt(),
+      favorite: json['favorite'] as bool?,
+    );
+
+Map<String, dynamic> _$$NftInfosOffChainImplToJson(
+        _$NftInfosOffChainImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'categoryNftIndex': instance.categoryNftIndex,
+      'favorite': instance.favorite,
+    };

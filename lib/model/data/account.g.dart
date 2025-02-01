@@ -72,3 +72,52 @@ class AccountImplAdapter extends TypeAdapter<_$AccountImpl> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$AccountImpl _$$AccountImplFromJson(Map<String, dynamic> json) =>
+    _$AccountImpl(
+      name: json['name'] as String,
+      genesisAddress: json['genesisAddress'] as String,
+      lastLoadingTransactionInputs:
+          (json['lastLoadingTransactionInputs'] as num?)?.toInt(),
+      selected: json['selected'] as bool?,
+      lastAddress: json['lastAddress'] as String?,
+      balance: json['balance'] == null
+          ? null
+          : AccountBalance.fromJson(json['balance'] as Map<String, dynamic>),
+      accountTokens: (json['accountTokens'] as List<dynamic>?)
+          ?.map((e) => AccountToken.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      accountNFT: (json['accountNFT'] as List<dynamic>?)
+          ?.map((e) => AccountToken.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      nftInfosOffChainList: (json['nftInfosOffChainList'] as List<dynamic>?)
+          ?.map((e) => NftInfosOffChain.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      serviceType: json['serviceType'] as String?,
+      accountNFTCollections: (json['accountNFTCollections'] as List<dynamic>?)
+          ?.map((e) => AccountToken.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      customTokenAddressList: (json['customTokenAddressList'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+    );
+
+Map<String, dynamic> _$$AccountImplToJson(_$AccountImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'genesisAddress': instance.genesisAddress,
+      'lastLoadingTransactionInputs': instance.lastLoadingTransactionInputs,
+      'selected': instance.selected,
+      'lastAddress': instance.lastAddress,
+      'balance': instance.balance,
+      'accountTokens': instance.accountTokens,
+      'accountNFT': instance.accountNFT,
+      'nftInfosOffChainList': instance.nftInfosOffChainList,
+      'serviceType': instance.serviceType,
+      'accountNFTCollections': instance.accountNFTCollections,
+      'customTokenAddressList': instance.customTokenAddressList,
+    };

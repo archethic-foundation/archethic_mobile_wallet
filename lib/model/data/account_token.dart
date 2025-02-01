@@ -5,6 +5,7 @@ import 'package:aewallet/model/blockchain/token_information.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
+part 'account_token.freezed.dart';
 part 'account_token.g.dart';
 
 class AccountTokenConverter
@@ -33,18 +34,14 @@ class AccountTokenConverter
 }
 
 /// Next field available : 9
-@HiveType(typeId: HiveTypeIds.accountToken)
-class AccountToken extends HiveObject {
-  AccountToken({
-    this.tokenInformation,
-    this.amount,
-  });
+@freezed
+class AccountToken with _$AccountToken {
+  @HiveType(typeId: HiveTypeIds.accountToken)
+  factory AccountToken({
+    @HiveField(7) TokenInformation? tokenInformation,
+    @HiveField(8) double? amount,
+  }) = _AccountToken;
 
-  /// Token Information
-  @HiveField(7)
-  TokenInformation? tokenInformation;
-
-  /// Amount
-  @HiveField(8)
-  double? amount;
+  factory AccountToken.fromJson(Map<String, dynamic> json) =>
+      _$AccountTokenFromJson(json);
 }

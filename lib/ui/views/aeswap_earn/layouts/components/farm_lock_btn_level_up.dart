@@ -43,6 +43,7 @@ class FarmLockBtnLevelUp extends ConsumerWidget {
     if (farmLock == null) return const SizedBox.shrink();
 
     return ButtonValidateMobile(
+      fontSize: 14,
       controlOk: enabled,
       labelBtn: AppLocalizations.of(context)!.farmLockBtnLevelUp,
       onPressed: () async {

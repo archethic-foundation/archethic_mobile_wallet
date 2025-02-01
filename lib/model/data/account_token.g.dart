@@ -6,24 +6,24 @@ part of 'account_token.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AccountTokenAdapter extends TypeAdapter<AccountToken> {
+class AccountTokenImplAdapter extends TypeAdapter<_$AccountTokenImpl> {
   @override
   final int typeId = 8;
 
   @override
-  AccountToken read(BinaryReader reader) {
+  _$AccountTokenImpl read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AccountToken(
+    return _$AccountTokenImpl(
       tokenInformation: fields[7] as TokenInformation?,
       amount: fields[8] as double?,
     );
   }
 
   @override
-  void write(BinaryWriter writer, AccountToken obj) {
+  void write(BinaryWriter writer, _$AccountTokenImpl obj) {
     writer
       ..writeByte(2)
       ..writeByte(7)
@@ -38,7 +38,26 @@ class AccountTokenAdapter extends TypeAdapter<AccountToken> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AccountTokenAdapter &&
+      other is AccountTokenImplAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+_$AccountTokenImpl _$$AccountTokenImplFromJson(Map<String, dynamic> json) =>
+    _$AccountTokenImpl(
+      tokenInformation: json['tokenInformation'] == null
+          ? null
+          : TokenInformation.fromJson(
+              json['tokenInformation'] as Map<String, dynamic>),
+      amount: (json['amount'] as num?)?.toDouble(),
+    );
+
+Map<String, dynamic> _$$AccountTokenImplToJson(_$AccountTokenImpl instance) =>
+    <String, dynamic>{
+      'tokenInformation': instance.tokenInformation,
+      'amount': instance.amount,
+    };

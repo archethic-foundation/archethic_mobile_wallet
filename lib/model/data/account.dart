@@ -30,7 +30,7 @@ class AccountConverter implements JsonConverter<Account, Map<String, dynamic>> {
 
 /// Next field available : 16
 @freezed
-class Account extends HiveObject with _$Account {
+class Account with _$Account {
   @HiveType(typeId: HiveTypeIds.account)
   factory Account({
     /// Account name - Primary Key
@@ -80,5 +80,6 @@ class Account extends HiveObject with _$Account {
     @HiveField(15) List<String>? customTokenAddressList,
   }) = _Account;
 
-  Account._();
+  factory Account.fromJson(Map<String, dynamic> json) =>
+      _$AccountFromJson(json);
 }

@@ -52,6 +52,8 @@ abstract class $AddTokenFormStateCopyWith<$Res> {
       String errorSymbolText,
       String errorInitialSupplyText,
       String errorAmountText});
+
+  $AccountBalanceCopyWith<$Res> get accountBalance;
 }
 
 /// @nodoc
@@ -123,6 +125,16 @@ class _$AddTokenFormStateCopyWithImpl<$Res, $Val extends AddTokenFormState>
               as String,
     ) as $Val);
   }
+
+  /// Create a copy of AddTokenFormState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AccountBalanceCopyWith<$Res> get accountBalance {
+    return $AccountBalanceCopyWith<$Res>(_value.accountBalance, (value) {
+      return _then(_value.copyWith(accountBalance: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -144,6 +156,9 @@ abstract class _$$AddTokenFormStateImplCopyWith<$Res>
       String errorSymbolText,
       String errorInitialSupplyText,
       String errorAmountText});
+
+  @override
+  $AccountBalanceCopyWith<$Res> get accountBalance;
 }
 
 /// @nodoc

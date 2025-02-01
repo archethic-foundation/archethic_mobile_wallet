@@ -134,12 +134,6 @@ class AddCustomTokenSheet extends ConsumerWidget {
                       (await ref
                               .read(accountsNotifierProvider.notifier)
                               .selectedAccountNotifier)
-                          ?.refreshBalance(),
-                    );
-                    unawaited(
-                      (await ref
-                              .read(accountsNotifierProvider.notifier)
-                              .selectedAccountNotifier)
                           ?.refreshFungibleTokens(),
                     );
 

@@ -1,5 +1,5 @@
 /// SPDX-License-Identifier: AGPL-3.0-or-later
-import 'package:aewallet/application/account/selected_account.dart';
+import 'package:aewallet/application/account/accounts_notifier.dart';
 import 'package:aewallet/ui/themes/styles.dart';
 import 'package:aewallet/ui/views/nft/layouts/components/nft_list_detail.dart';
 import 'package:aewallet/ui/widgets/components/dynamic_height_grid_view.dart';
@@ -22,8 +22,24 @@ class _NFTListState extends ConsumerState<NFTList>
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final selectedAccount = ref
+        .watch(
+          accountsNotifierProvider,
+        )
+        .valueOrNull
+        ?.selectedAccount;
+    if (selectedAccount == null) {
+      return const _EmptyNFTList();
+    }
 
-    final accountTokenList = ref.watch(selectedAccountNFTFilteredProvider);
+    final accountTokenList = [
+      ...selectedAccount.accountNFT ?? [],
+      ...(selectedAccount.accountNFTCollections?.where(
+            (e) => <String>{}.add(e.tokenInformation?.address ?? ''),
+          ) ??
+          []),
+    ];
+
     if (accountTokenList.isEmpty) {
       return const _EmptyNFTList();
     }
@@ -37,6 +53,9 @@ class _NFTListState extends ConsumerState<NFTList>
         physics: const NeverScrollableScrollPhysics(),
         itemCount: accountTokenList.length,
         builder: (context, index) {
+          if (accountTokenList[index].tokenInformation == null) {
+            return const SizedBox.shrink();
+          }
           final tokenInformation = accountTokenList[index].tokenInformation!;
           return NFTListDetail(
             address: tokenInformation.address ?? '',

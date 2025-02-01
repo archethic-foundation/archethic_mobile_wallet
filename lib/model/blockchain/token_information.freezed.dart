@@ -263,8 +263,9 @@ class __$$TokenInformationImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
+@HiveType(typeId: HiveTypeIds.tokenInformation)
 class _$TokenInformationImpl implements _TokenInformation {
-  const _$TokenInformationImpl(
+  _$TokenInformationImpl(
       {@HiveField(0) this.address,
       @HiveField(1) this.name,
       @HiveField(3) this.type,
@@ -409,7 +410,7 @@ class _$TokenInformationImpl implements _TokenInformation {
 }
 
 abstract class _TokenInformation implements TokenInformation {
-  const factory _TokenInformation(
+  factory _TokenInformation(
       {@HiveField(0) final String? address,
       @HiveField(1) final String? name,
       @HiveField(3) final String? type,

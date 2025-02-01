@@ -14,6 +14,10 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Account _$AccountFromJson(Map<String, dynamic> json) {
+  return _Account.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Account {
   /// Account name - Primary Key
@@ -72,6 +76,9 @@ mixin _$Account {
   List<String>? get customTokenAddressList =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this Account to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
   /// Create a copy of Account
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -101,6 +108,8 @@ abstract class $AccountCopyWith<$Res> {
       @HiveField(13) String? serviceType,
       @HiveField(14) List<AccountToken>? accountNFTCollections,
       @HiveField(15) List<String>? customTokenAddressList});
+
+  $AccountBalanceCopyWith<$Res>? get balance;
 }
 
 /// @nodoc
@@ -182,6 +191,20 @@ class _$AccountCopyWithImpl<$Res, $Val extends Account>
               as List<String>?,
     ) as $Val);
   }
+
+  /// Create a copy of Account
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AccountBalanceCopyWith<$Res>? get balance {
+    if (_value.balance == null) {
+      return null;
+    }
+
+    return $AccountBalanceCopyWith<$Res>(_value.balance!, (value) {
+      return _then(_value.copyWith(balance: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -209,6 +232,9 @@ abstract class _$$AccountImplCopyWith<$Res> implements $AccountCopyWith<$Res> {
       @HiveField(13) String? serviceType,
       @HiveField(14) List<AccountToken>? accountNFTCollections,
       @HiveField(15) List<String>? customTokenAddressList});
+
+  @override
+  $AccountBalanceCopyWith<$Res>? get balance;
 }
 
 /// @nodoc
@@ -291,9 +317,9 @@ class __$$AccountImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 @HiveType(typeId: HiveTypeIds.account)
-class _$AccountImpl extends _Account {
+class _$AccountImpl implements _Account {
   _$AccountImpl(
       {@HiveField(0) required this.name,
       @HiveField(1) required this.genesisAddress,
@@ -316,8 +342,10 @@ class _$AccountImpl extends _Account {
         _accountNFT = accountNFT,
         _nftInfosOffChainList = nftInfosOffChainList,
         _accountNFTCollections = accountNFTCollections,
-        _customTokenAddressList = customTokenAddressList,
-        super._();
+        _customTokenAddressList = customTokenAddressList;
+
+  factory _$AccountImpl.fromJson(Map<String, dynamic> json) =>
+      _$$AccountImplFromJson(json);
 
   /// Account name - Primary Key
   @override
@@ -470,6 +498,7 @@ class _$AccountImpl extends _Account {
                 other._customTokenAddressList, _customTokenAddressList));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -493,9 +522,16 @@ class _$AccountImpl extends _Account {
   @pragma('vm:prefer-inline')
   _$$AccountImplCopyWith<_$AccountImpl> get copyWith =>
       __$$AccountImplCopyWithImpl<_$AccountImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$AccountImplToJson(
+      this,
+    );
+  }
 }
 
-abstract class _Account extends Account {
+abstract class _Account implements Account {
   factory _Account(
       {@HiveField(0) required final String name,
       @HiveField(1) required final String genesisAddress,
@@ -515,7 +551,8 @@ abstract class _Account extends Account {
       @HiveField(14) final List<AccountToken>? accountNFTCollections,
       @HiveField(15)
       final List<String>? customTokenAddressList}) = _$AccountImpl;
-  _Account._() : super._();
+
+  factory _Account.fromJson(Map<String, dynamic> json) = _$AccountImpl.fromJson;
 
   /// Account name - Primary Key
   @override

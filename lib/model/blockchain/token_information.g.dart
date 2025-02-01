@@ -6,17 +6,17 @@ part of 'token_information.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TokenInformationAdapter extends TypeAdapter<TokenInformation> {
+class TokenInformationImplAdapter extends TypeAdapter<_$TokenInformationImpl> {
   @override
   final int typeId = 9;
 
   @override
-  TokenInformation read(BinaryReader reader) {
+  _$TokenInformationImpl read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return TokenInformation(
+    return _$TokenInformationImpl(
       address: fields[0] as String?,
       name: fields[1] as String?,
       type: fields[3] as String?,
@@ -35,7 +35,7 @@ class TokenInformationAdapter extends TypeAdapter<TokenInformation> {
   }
 
   @override
-  void write(BinaryWriter writer, TokenInformation obj) {
+  void write(BinaryWriter writer, _$TokenInformationImpl obj) {
     writer
       ..writeByte(12)
       ..writeByte(0)
@@ -50,18 +50,18 @@ class TokenInformationAdapter extends TypeAdapter<TokenInformation> {
       ..write(obj.supply)
       ..writeByte(10)
       ..write(obj.id)
-      ..writeByte(12)
-      ..write(obj.tokenProperties)
-      ..writeByte(13)
-      ..write(obj.aeip)
-      ..writeByte(14)
-      ..write(obj.tokenCollection)
       ..writeByte(15)
       ..write(obj.decimals)
       ..writeByte(16)
       ..write(obj.isLPToken)
       ..writeByte(17)
-      ..write(obj.isVerified);
+      ..write(obj.isVerified)
+      ..writeByte(12)
+      ..write(obj.tokenProperties)
+      ..writeByte(13)
+      ..write(obj.aeip)
+      ..writeByte(14)
+      ..write(obj.tokenCollection);
   }
 
   @override
@@ -70,7 +70,7 @@ class TokenInformationAdapter extends TypeAdapter<TokenInformation> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TokenInformationAdapter &&
+      other is TokenInformationImplAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

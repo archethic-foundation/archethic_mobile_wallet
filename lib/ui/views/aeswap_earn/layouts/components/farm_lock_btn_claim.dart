@@ -32,6 +32,7 @@ class FarmLockBtnClaim extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return ButtonValidateMobile(
+      fontSize: 14,
       controlOk: enabled,
       labelBtn: AppLocalizations.of(context)!.farmLockBtnClaim,
       onPressed: () async {

@@ -101,34 +101,11 @@ class _TransferConfirmSheetState extends ConsumerState<TransferConfirmSheet>
     );
 
     try {
-      final transfer = ref.read(TransferFormProvider.transferForm);
-      if (transfer.transferType == TransferType.nft) {
-        unawaited(
-          (await ref
-                  .read(accountsNotifierProvider.notifier)
-                  .selectedAccountNotifier)
-              ?.refreshNFT(),
-        );
-      }
       unawaited(
         (await ref
                 .read(accountsNotifierProvider.notifier)
                 .selectedAccountNotifier)
-            ?.refreshRecentTransactions(),
-      );
-      if (transfer.transferType == TransferType.token) {
-        unawaited(
-          (await ref
-                  .read(accountsNotifierProvider.notifier)
-                  .selectedAccountNotifier)
-              ?.refreshFungibleTokens(),
-        );
-      }
-      unawaited(
-        (await ref
-                .read(accountsNotifierProvider.notifier)
-                .selectedAccountNotifier)
-            ?.refreshBalance(),
+            ?.refreshAll(),
       );
     } finally {
       context.go(HomePage.routerPage);
