@@ -1,0 +1,5 @@
+Version 4.6.1
+
+- AeWallet mobile can be opened in deeplink from a web dApp
+- It's now easier for dApp developers to switch from testnet to mainnet
+- Improved display of recent transactions
