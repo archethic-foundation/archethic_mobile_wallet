@@ -41,6 +41,7 @@ class FarmLockBtnWithdraw extends ConsumerWidget {
     WidgetRef ref,
   ) {
     return ButtonValidateMobile(
+      fontSize: 14,
       controlOk: enabled,
       labelBtn: AppLocalizations.of(context)!.farmLockBtnWithdraw,
       onPressed: () async {

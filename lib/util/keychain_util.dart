@@ -216,19 +216,24 @@ mixin KeychainServiceMixin {
         if (balanceGetResponseMap[accounts[i].genesisAddress] != null) {
           final balanceGetResponse =
               balanceGetResponseMap[accounts[i].genesisAddress]!;
-          final accountBalance = AccountBalance(
+          var accountBalance = AccountBalance(
             nativeTokenName: AccountBalance.cryptoCurrencyLabel,
             nativeTokenValue: fromBigInt(balanceGetResponse.uco).toDouble(),
           );
           if (balanceGetResponse.uco > 0) {
-            accountBalance.tokensFungiblesNb++;
+            accountBalance = accountBalance.copyWith(
+              tokensFungiblesNb: accountBalance.tokensFungiblesNb + 1,
+            );
           }
           for (final token in balanceGetResponse.token) {
             if (token.tokenId != null) {
               if (token.tokenId == 0) {
-                accountBalance.tokensFungiblesNb++;
+                accountBalance = accountBalance.copyWith(
+                  tokensFungiblesNb: accountBalance.tokensFungiblesNb + 1,
+                );
               } else {
-                accountBalance.nftNb++;
+                accountBalance =
+                    accountBalance.copyWith(nftNb: accountBalance.nftNb + 1);
               }
             }
           }

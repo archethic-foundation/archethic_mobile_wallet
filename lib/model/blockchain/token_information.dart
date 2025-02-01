@@ -9,10 +9,10 @@ part 'token_information.freezed.dart';
 part 'token_information.g.dart';
 
 /// Next field available : 18
-@HiveType(typeId: HiveTypeIds.tokenInformation)
 @freezed
 class TokenInformation with _$TokenInformation {
-  const factory TokenInformation({
+  @HiveType(typeId: HiveTypeIds.tokenInformation)
+  factory TokenInformation({
     @HiveField(0) String? address,
     @HiveField(1) String? name,
     @HiveField(3) String? type,

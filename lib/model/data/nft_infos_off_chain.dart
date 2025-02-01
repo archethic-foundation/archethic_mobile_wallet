@@ -2,24 +2,27 @@
 
 // Package imports:
 import 'package:aewallet/infrastructure/datasources/appdb.hive.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
+part 'nft_infos_off_chain.freezed.dart';
 part 'nft_infos_off_chain.g.dart';
 
-@HiveType(typeId: HiveTypeIds.nftInfosOffChain)
-class NftInfosOffChain extends HiveObject {
+@freezed
+class NftInfosOffChain with _$NftInfosOffChain {
+  @HiveType(typeId: HiveTypeIds.nftInfosOffChain)
   @Deprecated('Thanks to hive, we should keep this unused class...')
-  NftInfosOffChain({this.id, this.categoryNftIndex, this.favorite});
+  factory NftInfosOffChain({
+    /// Token's Id
+    @HiveField(0) String? id,
 
-  /// Token's Id
-  @HiveField(0)
-  String? id;
+    /// Category Nft
+    @HiveField(3) int? categoryNftIndex,
 
-  /// Category Nft
-  @HiveField(3)
-  int? categoryNftIndex;
+    /// Favorite
+    @HiveField(4) bool? favorite,
+  }) = _NftInfosOffChain;
 
-  /// Favorite
-  @HiveField(4)
-  bool? favorite;
+  factory NftInfosOffChain.fromJson(Map<String, dynamic> json) =>
+      _$NftInfosOffChainFromJson(json);
 }

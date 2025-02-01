@@ -4,7 +4,6 @@ import 'dart:async';
 
 import 'package:aewallet/application/app_service.dart';
 import 'package:aewallet/application/nft/nft.dart';
-import 'package:aewallet/application/recent_transactions.dart';
 import 'package:aewallet/application/refresh_in_progress.dart';
 import 'package:aewallet/application/session/session.dart';
 import 'package:aewallet/infrastructure/datasources/account.hive.dart';
@@ -91,17 +90,22 @@ class AccountNotifier extends _$AccountNotifier {
   Future<void> refreshRecentTransactions() =>
       _performOperation(_updateRecentTransactionsOperation);
 
-  Future<void> refreshFungibleTokens() =>
-      _performOperation(_updateFungibleTokensOperation);
+  Future<void> refreshFungibleTokens() => _performOperations([
+        _updateFungibleTokensOperation,
+        _updateBalanceOperation,
+      ]);
 
-  Future<void> refreshNFT() => _performOperation(_updateNFTOperation);
+  Future<void> refreshNFT() => _performOperations([
+        _updateNFTOperation,
+        _updateBalanceOperation,
+      ]);
 
   Future<void> refreshBalance() => _performOperation(_updateBalanceOperation);
 
   Future<void> refreshAll() => _performOperations([
-        _updateBalanceOperation,
         _updateFungibleTokensOperation,
         _updateNFTOperation,
+        _updateBalanceOperation,
       ]);
 
   _RefreshOperation get _updateBalanceOperation => (
@@ -144,7 +148,7 @@ class AccountNotifier extends _$AccountNotifier {
     aedappfm.CryptoPrice cryptoPrice,
   ) async {
     final ucoAmount = fromBigInt(balanceGetResponse.uco).toDouble();
-    final accountBalance = AccountBalance(
+    var accountBalance = AccountBalance(
       nativeTokenName: AccountBalance.cryptoCurrencyLabel,
       nativeTokenValue: ucoAmount,
     );
@@ -152,7 +156,9 @@ class AccountNotifier extends _$AccountNotifier {
     var totalUSD = 0.0;
 
     if (balanceGetResponse.uco > 0) {
-      accountBalance.tokensFungiblesNb++;
+      accountBalance = accountBalance.copyWith(
+        tokensFungiblesNb: accountBalance.tokensFungiblesNb + 1,
+      );
 
       final archethicOracleUCO = await ref.read(
         aedappfm.ArchethicOracleUCOProviders.archethicOracleUCO.future,
@@ -163,29 +169,34 @@ class AccountNotifier extends _$AccountNotifier {
           .toDouble();
     }
 
-    totalUSD += await _calculateTokensValue(
+    final (tokensValue, updatedAccountBalance) = await _calculateTokensValue(
       balanceGetResponse.token,
       accountBalance,
       ucidsTokens,
       cryptoPrice,
     );
 
-    accountBalance.totalUSD = totalUSD;
-    return accountBalance;
+    totalUSD += tokensValue;
+
+    return updatedAccountBalance.copyWith(
+      totalUSD: totalUSD,
+    );
   }
 
-  Future<double> _calculateTokensValue(
+  Future<(double, AccountBalance)> _calculateTokensValue(
     List<TokenBalance> tokens,
     AccountBalance accountBalance,
     Map<String, int> ucidsTokens,
     aedappfm.CryptoPrice cryptoPrice,
   ) async {
     var totalUSD = 0.0;
+    var tokensFungiblesNb = accountBalance.tokensFungiblesNb;
+    var nftNb = accountBalance.nftNb;
 
     for (final token in tokens) {
       if (token.tokenId != null) {
         if (token.tokenId == 0) {
-          accountBalance.tokensFungiblesNb++;
+          tokensFungiblesNb++;
 
           final ucidsToken = ucidsTokens[token.address];
           if (ucidsToken != null && ucidsToken != 0) {
@@ -200,12 +211,17 @@ class AccountNotifier extends _$AccountNotifier {
             totalUSD += amountTokenUSD;
           }
         } else {
-          accountBalance.nftNb++;
+          nftNb++;
         }
       }
     }
 
-    return totalUSD;
+    final updatedAccountBalance = accountBalance.copyWith(
+      tokensFungiblesNb: tokensFungiblesNb,
+      nftNb: nftNb,
+    );
+
+    return (totalUSD, updatedAccountBalance);
   }
 
   _RefreshOperation get _updateFungibleTokensOperation => (
@@ -227,11 +243,12 @@ class AccountNotifier extends _$AccountNotifier {
   _RefreshOperation get _updateRecentTransactionsOperation => (
         name: 'Recent Transactions',
         operation: (Account account) async {
-          ref.invalidate(
+          // TODO:(reddwarf03)
+          /* ref.invalidate(
             recentTransactionsProvider(
               account.genesisAddress,
             ),
-          );
+          );*/
           return account;
         },
       );

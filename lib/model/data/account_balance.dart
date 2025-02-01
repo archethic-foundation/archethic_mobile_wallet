@@ -6,6 +6,7 @@ import 'package:archethic_dapp_framework_flutter/archethic_dapp_framework_flutte
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive/hive.dart';
 
+part 'account_balance.freezed.dart';
 part 'account_balance.g.dart';
 
 class AccountBalanceConverter
@@ -34,38 +35,24 @@ class AccountBalanceConverter
 }
 
 /// Next field available : 8
-@HiveType(typeId: HiveTypeIds.accountBalance)
-class AccountBalance extends HiveObject {
-  AccountBalance({
-    required this.nativeTokenValue,
-    required this.nativeTokenName,
-    this.tokensFungiblesNb = 0,
-    this.nftNb = 0,
-    this.totalUSD = 0,
-  });
+@freezed
+class AccountBalance with _$AccountBalance {
+  @HiveType(typeId: HiveTypeIds.accountBalance)
+  factory AccountBalance({
+    @HiveField(0) required double nativeTokenValue,
+    @HiveField(1) required String nativeTokenName,
+    @HiveField(5) @Default(0) int tokensFungiblesNb,
+    @HiveField(6) @Default(0) int nftNb,
+    @HiveField(7) @Default(0) double totalUSD,
+  }) = _AccountBalance;
+
+  factory AccountBalance.fromJson(Map<String, dynamic> json) =>
+      _$AccountBalanceFromJson(json);
 
   static const String cryptoCurrencyLabel = 'UCO';
+}
 
-  /// Native Token - Value
-  @HiveField(0)
-  final double nativeTokenValue;
-
-  /// Native Token - Name
-  @HiveField(1)
-  final String nativeTokenName;
-
-  /// Token Price
-  @HiveField(5, defaultValue: 0)
-  int tokensFungiblesNb;
-
-  /// Token Price
-  @HiveField(6, defaultValue: 0)
-  int nftNb;
-
-  /// Token Price
-  @HiveField(7, defaultValue: 0)
-  double totalUSD;
-
+extension AccountBalanceExtensions on AccountBalance {
   String nativeTokenValueToString(String locale, {int? digits}) {
     if (nativeTokenValue > 1000000) {
       return NumberUtil.formatThousands(nativeTokenValue.round());
@@ -78,10 +65,6 @@ class AccountBalance extends HiveObject {
   }
 
   bool isNativeTokenValuePositive() {
-    if (nativeTokenValue > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return nativeTokenValue > 0;
   }
 }
