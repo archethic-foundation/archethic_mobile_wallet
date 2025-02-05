@@ -3,7 +3,7 @@ description: Fully decentralized and cryptocurrency non-custodial hot wallet tha
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
-version: 4.6.1+621
+version: 4.7.0+622
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -72,8 +72,14 @@ dependencies:
   # Get infos about the device
   device_info_plus: ^10.1.2
 
+  # A fully customizable, beautiful and easy to use stepper widget. It help you to show or collect information from users using organized steps.
+  easy_stepper: ^0.8.5+1
+
   # A new flutter package to display notifications on top of the screen, full customizable with built-in themes
   elegant_notification: ^2.1.0
+
+  # Mail validator
+  email_validator: ^3.0.0
 
   # EventTaxi could be used to send events through different layers of the application decoupled from the architecture
   event_taxi: ^1.0.0
@@ -86,6 +92,9 @@ dependencies:
 
   # Add beautiful animated effects & builders in Flutter, via an easy, customizable, unified API.
   flutter_animate: ^4.2.0+1
+
+  # Load configuration at runtime from a .env file which can be used throughout the application.
+  flutter_dotenv: ^5.2.1
 
   # A flutter implementation of React hooks. It adds a new kind of widget with enhanced code reuse
   flutter_hooks: ^0.20.0
@@ -295,6 +304,7 @@ flutter:
   generate: true
 
   assets:
+    - .env
     - assets/ssl/
     - assets/bc-logos/
     - assets/icons/
