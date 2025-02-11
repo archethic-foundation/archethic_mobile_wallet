@@ -41,9 +41,9 @@ class AccountBalance with _$AccountBalance {
   factory AccountBalance({
     @HiveField(0) required double nativeTokenValue,
     @HiveField(1) required String nativeTokenName,
-    @HiveField(5) @Default(0) int tokensFungiblesNb,
-    @HiveField(6) @Default(0) int nftNb,
-    @HiveField(7) @Default(0) double totalUSD,
+    @HiveField(5, defaultValue: 0) @Default(0) int tokensFungiblesNb,
+    @HiveField(6, defaultValue: 0) @Default(0) int nftNb,
+    @HiveField(7, defaultValue: 0) @Default(0) double totalUSD,
   }) = _AccountBalance;
 
   factory AccountBalance.fromJson(Map<String, dynamic> json) =>

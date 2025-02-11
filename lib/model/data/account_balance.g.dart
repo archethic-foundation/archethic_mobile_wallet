@@ -19,9 +19,9 @@ class AccountBalanceImplAdapter extends TypeAdapter<_$AccountBalanceImpl> {
     return _$AccountBalanceImpl(
       nativeTokenValue: fields[0] as double,
       nativeTokenName: fields[1] as String,
-      tokensFungiblesNb: fields[5] as int,
-      nftNb: fields[6] as int,
-      totalUSD: fields[7] as double,
+      tokensFungiblesNb: fields[5] == null ? 0 : fields[5] as int,
+      nftNb: fields[6] == null ? 0 : fields[6] as int,
+      totalUSD: fields[7] == null ? 0 : fields[7] as double,
     );
   }
 
