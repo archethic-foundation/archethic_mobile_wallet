@@ -24,11 +24,11 @@ mixin _$AccountBalance {
   double get nativeTokenValue => throw _privateConstructorUsedError;
   @HiveField(1)
   String get nativeTokenName => throw _privateConstructorUsedError;
-  @HiveField(5)
+  @HiveField(5, defaultValue: 0)
   int get tokensFungiblesNb => throw _privateConstructorUsedError;
-  @HiveField(6)
+  @HiveField(6, defaultValue: 0)
   int get nftNb => throw _privateConstructorUsedError;
-  @HiveField(7)
+  @HiveField(7, defaultValue: 0)
   double get totalUSD => throw _privateConstructorUsedError;
 
   /// Serializes this AccountBalance to a JSON map.
@@ -50,9 +50,9 @@ abstract class $AccountBalanceCopyWith<$Res> {
   $Res call(
       {@HiveField(0) double nativeTokenValue,
       @HiveField(1) String nativeTokenName,
-      @HiveField(5) int tokensFungiblesNb,
-      @HiveField(6) int nftNb,
-      @HiveField(7) double totalUSD});
+      @HiveField(5, defaultValue: 0) int tokensFungiblesNb,
+      @HiveField(6, defaultValue: 0) int nftNb,
+      @HiveField(7, defaultValue: 0) double totalUSD});
 }
 
 /// @nodoc
@@ -112,9 +112,9 @@ abstract class _$$AccountBalanceImplCopyWith<$Res>
   $Res call(
       {@HiveField(0) double nativeTokenValue,
       @HiveField(1) String nativeTokenName,
-      @HiveField(5) int tokensFungiblesNb,
-      @HiveField(6) int nftNb,
-      @HiveField(7) double totalUSD});
+      @HiveField(5, defaultValue: 0) int tokensFungiblesNb,
+      @HiveField(6, defaultValue: 0) int nftNb,
+      @HiveField(7, defaultValue: 0) double totalUSD});
 }
 
 /// @nodoc
@@ -168,9 +168,9 @@ class _$AccountBalanceImpl implements _AccountBalance {
   _$AccountBalanceImpl(
       {@HiveField(0) required this.nativeTokenValue,
       @HiveField(1) required this.nativeTokenName,
-      @HiveField(5) this.tokensFungiblesNb = 0,
-      @HiveField(6) this.nftNb = 0,
-      @HiveField(7) this.totalUSD = 0});
+      @HiveField(5, defaultValue: 0) this.tokensFungiblesNb = 0,
+      @HiveField(6, defaultValue: 0) this.nftNb = 0,
+      @HiveField(7, defaultValue: 0) this.totalUSD = 0});
 
   factory _$AccountBalanceImpl.fromJson(Map<String, dynamic> json) =>
       _$$AccountBalanceImplFromJson(json);
@@ -183,15 +183,15 @@ class _$AccountBalanceImpl implements _AccountBalance {
   final String nativeTokenName;
   @override
   @JsonKey()
-  @HiveField(5)
+  @HiveField(5, defaultValue: 0)
   final int tokensFungiblesNb;
   @override
   @JsonKey()
-  @HiveField(6)
+  @HiveField(6, defaultValue: 0)
   final int nftNb;
   @override
   @JsonKey()
-  @HiveField(7)
+  @HiveField(7, defaultValue: 0)
   final double totalUSD;
 
   @override
@@ -239,11 +239,12 @@ class _$AccountBalanceImpl implements _AccountBalance {
 
 abstract class _AccountBalance implements AccountBalance {
   factory _AccountBalance(
-      {@HiveField(0) required final double nativeTokenValue,
-      @HiveField(1) required final String nativeTokenName,
-      @HiveField(5) final int tokensFungiblesNb,
-      @HiveField(6) final int nftNb,
-      @HiveField(7) final double totalUSD}) = _$AccountBalanceImpl;
+          {@HiveField(0) required final double nativeTokenValue,
+          @HiveField(1) required final String nativeTokenName,
+          @HiveField(5, defaultValue: 0) final int tokensFungiblesNb,
+          @HiveField(6, defaultValue: 0) final int nftNb,
+          @HiveField(7, defaultValue: 0) final double totalUSD}) =
+      _$AccountBalanceImpl;
 
   factory _AccountBalance.fromJson(Map<String, dynamic> json) =
       _$AccountBalanceImpl.fromJson;
@@ -255,13 +256,13 @@ abstract class _AccountBalance implements AccountBalance {
   @HiveField(1)
   String get nativeTokenName;
   @override
-  @HiveField(5)
+  @HiveField(5, defaultValue: 0)
   int get tokensFungiblesNb;
   @override
-  @HiveField(6)
+  @HiveField(6, defaultValue: 0)
   int get nftNb;
   @override
-  @HiveField(7)
+  @HiveField(7, defaultValue: 0)
   double get totalUSD;
 
   /// Create a copy of AccountBalance
