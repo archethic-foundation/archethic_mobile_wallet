@@ -430,6 +430,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
+  easy_stepper:
+    dependency: "direct main"
+    description:
+      name: easy_stepper
+      sha256: "63f66314a509ec690c8152a41288961fd96ba9e92ef184299f068a5e78bd16ad"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.5+1"
   ecdsa:
     dependency: transitive
     description:
@@ -454,6 +462,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.11"
+  email_validator:
+    dependency: "direct main"
+    description:
+      name: email_validator
+      sha256: b19aa5d92fdd76fbc65112060c94d45ba855105a28bb6e462de7ff03b12fa1fb
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   equatable:
     dependency: transitive
     description:
@@ -539,6 +555,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: b7c7be5cd9f6ef7a78429cabd2774d3c4af50e79cb2b7593e3d5d763ef95c61b
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_hooks:
     dependency: "direct main"
     description:
@@ -1130,6 +1154,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.0"
+  lottie:
+    dependency: transitive
+    description:
+      name: lottie
+      sha256: fa39707f36786707b01eca7626d2c16c32aa603b3f3a146518518458847dc127
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   macros:
     dependency: transitive
     description:
@@ -1258,6 +1290,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.1"
+  numeral:
+    dependency: "direct main"
+    description:
+      name: numeral
+      sha256: "8609d08b08a67fbbf1a28c2fe41fed288845947ace165375d71772d52f7e95c6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   octo_image:
     dependency: transitive
     description:
